@@ -2,7 +2,9 @@
 #define _IMAGE_ANL_H
 
 #include "stm32f4xx.h"
-void searchfirstlight(void);
+void searchfirstlight();
+void searchsecondlight();
+void searchthirdlight();
 void Image_Anl(void);
 extern int light1_x,light1_y;
 extern int light2_x,light2_y;

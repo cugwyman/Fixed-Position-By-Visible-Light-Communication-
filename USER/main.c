@@ -4,12 +4,14 @@
 #include "lcd.h"
 #include "ov7725.h"
 #include "SCCB.h"
-#include "usart5.h"
+//#include "usart5.h"
+#include "uart6050.h"
 #include "timer.h"
 #include "Image_Anl.h"
 #include "data_deal.h"
 #define THR 0xeFFF
 extern uint8_t Ov7725_vsync;
+//u16 imageblack[240][320];
 void ImagDisp(void)
 {
 	uint16_t i, j;
@@ -31,20 +33,22 @@ void ImagDispheibai(void)
 {
 	uint16_t i, j;
 	uint16_t Camera_Data;
-//	LCD_Scan_Dir(U2D_L2R);
-//	LCD_WriteRAM_Prepare();
+	LCD_Scan_Dir(U2D_L2R);
+	LCD_WriteRAM_Prepare();
 
 	for(i = 0; i < OV7725_EAGLE_H; i++)
+	{
 		for(j = 0; j < OV7725_EAGLE_W; j++)
 		{
 			READ_FIFO_PIXEL(Camera_Data);		/* 从FIFO读出一个rgb565像素到Camera_Data变量 */
 	
+			
 			if(Camera_Data>=THR)
 			{
 				Camera_Data=WHITE;		//二值化
 //				LCD_Fast_DrawPoint(i,j,WHITE);
-				light1_x = i;
-				light1_y = j;
+//				white_point = i;
+//				black_point = j;
 
 			}
 			else
@@ -52,8 +56,9 @@ void ImagDispheibai(void)
 				  Camera_Data=BLACK;		//二值化
 //				LCD_Fast_DrawPoint(i,j,BLACK);
 			}
-//					LCD->LCD_RAM=Camera_Data; 
+					LCD->LCD_RAM=Camera_Data; 
 		}
+	}
 }
 
 
@@ -63,16 +68,17 @@ void ImagDispheibai(void)
 
 int main(void)
 {
-//	u16 time,i;
+	u16 time,i;
 //	u8 data_send=255;
 	u8 cnt = 0;
 	NVIC_SetPriorityGrouping(NVIC_PriorityGroup_2);
-	uart_init(9600);
+	uart_init(115200);
 	delay_init(84);
 	/* 液晶初始化 */
 	LCD_Init();
 //	LCD_ShowNum(30,130,666,8,16);
-	Usart5_Init(38400);
+//	Usart5_Init(38400);
+	UART6050_Init();
 	TIM3_Int_Init(1000,72);
 	/* ov7725 gpio 初始化 */
 	Ov7725_GPIO_Config();
@@ -88,11 +94,18 @@ int main(void)
 		if(cnt%50==0)
 		{
 			cnt = 0;
-            LCD_ShowxNum(30,50,light1_x,3,16,0);    //显示电压值的整数部分，3.1111的话，这里就是显示3
-            LCD_ShowxNum(30,150,light1_y,3,16,0);    //显示电压值的整数部分，3.1111的话，这里就是显示3
-        }
-        
-        
+////			LCD_ShowNum(30,50,white_point,8,16);
+//////			LCD_ShowNum(30,150,black_point,8,16);
+//	   LCD_ShowNum(30,150,light1_y,8,16);
+//		 LCD_ShowNum(30,100,light1_x,8,16);
+
+		}
+//	LCD_ShowString(30,110,200,16,16," light1_x");
+//  	LCD_ShowString(30,110,200,16,16,(u8*) light1_x);
+//		printf("ok");
+//  	LCD_ShowString(30,110,200,16,16,(u8*) light1_x);		//显示LCD ID	      					 
+//		LCD_ShowString(30,130,200,12,12,(u8*)light1_y);
+//			LCD_ShowString(30,150,200,12,12,"l");
 //     data_send--;
 //		if(data_send<1)
 //		data_send=0;
@@ -102,8 +115,8 @@ int main(void)
 		{
 		  	FIFO_PREPARE;  			/*FIFO准备*/					
 ////       ImagDisp();
-       	  Image_Anl();
-//					ImagDispheibai();
+//       	  Image_Anl();
+					ImagDispheibai();
 ////			Data_Send(0x02,i+100,i+200,i+300,i+400);
 ////			time=1000*time_s+time_ms;
 ////			printf("time=%d\r\n",time);
