@@ -179,8 +179,8 @@ void LCD_Scan_Dir(u8 dir);									//设置屏扫描方向
 void LCD_Display_Dir(u8 dir);								//设置屏幕显示方向
 void LCD_Set_Window(u16 sx,u16 sy,u16 width,u16 height);	//设置窗口					   						   																			 
 //LCD分辨率设置
-#define SSD_HOR_RESOLUTION		320		//LCD水平分辨率
-#define SSD_VER_RESOLUTION		240		//LCD垂直分辨率
+#define SSD_HOR_RESOLUTION		800		//LCD水平分辨率
+#define SSD_VER_RESOLUTION		480		//LCD垂直分辨率
 //LCD驱动参数设置
 #define SSD_HOR_PULSE_WIDTH		1		//水平脉宽
 #define SSD_HOR_BACK_PORCH		46		//水平前廊

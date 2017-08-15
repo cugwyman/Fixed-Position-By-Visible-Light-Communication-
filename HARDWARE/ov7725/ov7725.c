@@ -310,16 +310,19 @@ ErrorStatus Ov7725_Init(void)
 	uint8_t Sensor_IDCode = 0;	
 	
 	//DEBUG("ov7725 Register Config Start......");
-	
 	if( 0 == SCCB_WriteByte ( 0x12, 0x80 ) ) /*∏¥Œªsensor */
 	{
 		//DEBUG("sccb write data error");		
+		
 		return ERROR ;
-	}	
+	}		
+
 	if( 0 == SCCB_ReadByte( &Sensor_IDCode, 1, 0x0b ) )	 /* ∂¡»°sensor ID∫≈*/
 	{
-		//DEBUG("read id faild");		
+		//DEBUG("read id faild");
+		
 		return ERROR;
+	
 	}
 	
 	//DEBUG("Sensor ID is 0x%x", Sensor_IDCode);	
@@ -334,11 +337,11 @@ ErrorStatus Ov7725_Init(void)
 				return ERROR;
 			}
 		}
-	}
+	}	
 	else
 	{
 		return ERROR;
-	}
+	}		
 	//DEBUG("ov7725 Register Config Success");
 	
 	return SUCCESS;
